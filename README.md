@@ -108,7 +108,7 @@ ERPLite/
 
 ## Screenshots
 
-> Add screenshots here after running locally.
+> Need to add screenshots here.
 
 ---
 
