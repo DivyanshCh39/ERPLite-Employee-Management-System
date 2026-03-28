@@ -1,0 +1,64 @@
+@model IEnumerable<ERPLite.Controllers.DeptSalaryReport>
+@{
+    ViewData["Title"] = "Salary Report";
+}
+
+<div class="card">
+    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+        <div>
+            <h6 class="mb-0 fw-bold"><i class="bi bi-bar-chart-line me-2 text-primary"></i>Department-wise Salary Report</h6>
+            <small class="text-muted">Generated via stored procedure: <code>usp_GetDepartmentSalaryReport</code></small>
+        </div>
+        <span class="badge bg-info-subtle text-info">As of @DateTime.Today.ToString("dd MMM yyyy")</span>
+    </div>
+    <div class="card-body p-0">
+        @if (Model != null && Model.Any())
+        {
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Department</th>
+                        <th class="text-center">Headcount</th>
+                        <th class="text-end">Min Salary</th>
+                        <th class="text-end">Avg Salary</th>
+                        <th class="text-end">Max Salary</th>
+                        <th class="text-end pe-4">Total Salary Bill</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-semibold">@row.Department</td>
+                            <td class="text-center">
+                                <span class="badge bg-primary-subtle text-primary">@row.TotalEmployees</span>
+                            </td>
+                            <td class="text-end">₹@row.MinSalary.ToString("N0")</td>
+                            <td class="text-end fw-semibold">₹@row.AverageSalary.ToString("N0")</td>
+                            <td class="text-end">₹@row.MaxSalary.ToString("N0")</td>
+                            <td class="text-end pe-4 fw-bold text-success">₹@row.TotalSalary.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot class="table-light">
+                    <tr>
+                        <td class="ps-4 fw-bold">Grand Total</td>
+                        <td class="text-center fw-bold">@Model.Sum(r => r.TotalEmployees)</td>
+                        <td colspan="3"></td>
+                        <td class="text-end pe-4 fw-bold text-success">
+                            ₹@Model.Sum(r => r.TotalSalary).ToString("N0")
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-info-circle fs-3 d-block mb-2"></i>
+                No data available. Make sure the stored procedure is created in SQL Server.<br />
+                <small>Run <code>SQL/StoredProcedures.sql</code> in SQL Server Management Studio.</small>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,113 @@
+@model IEnumerable<Employee>
+@{
+    ViewData["Title"] = "Employees";
+}
+
+<div class="card mb-4">
+    <div class="card-body py-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold small mb-1">Search</label>
+                <input name="search" class="form-control" placeholder="Name or email..."
+                       value="@ViewBag.Search" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold small mb-1">Department</label>
+                <select name="departmentId" class="form-select">
+                    <option value="">All Departments</option>
+                    @foreach (SelectListItem item in ViewBag.Departments)
+                    {
+                        <option value="@item.Value"
+                                @(item.Selected ? "selected" : "")>@item.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold small mb-1">Status</label>
+                <select name="activeOnly" class="form-select">
+                    <option value="">All</option>
+                    <option value="true"  @(ViewBag.ActiveOnly == true  ? "selected" : "")>Active</option>
+                    <option value="false" @(ViewBag.ActiveOnly == false ? "selected" : "")>Inactive</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
+                <a href="/Employee/Index" class="btn btn-outline-secondary">Clear</a>
+                <a href="/Employee/Create" class="btn btn-success ms-auto">
+                    <i class="bi bi-plus-lg"></i> Add
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th class="ps-4">Name</th>
+                    <th>Designation</th>
+                    <th>Department</th>
+                    <th>Phone</th>
+                    <th>Salary</th>
+                    <th>Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var emp in Model)
+                {
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-semibold">@emp.FullName</div>
+                            <small class="text-muted">@emp.Email</small>
+                        </td>
+                        <td>@emp.Designation</td>
+                        <td><span class="badge bg-primary-subtle text-primary">@emp.Department?.Name</span></td>
+                        <td>@emp.PhoneNumber</td>
+                        <td>₹@emp.Salary.ToString("N0")</td>
+                        <td>
+                            @if (emp.IsActive)
+                            {
+                                <span class="badge bg-success-subtle text-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary-subtle text-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a href="/Employee/Details/@emp.Id" class="btn btn-sm btn-outline-info" title="Details">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="/Employee/Edit/@emp.Id" class="btn btn-sm btn-outline-warning" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="/Employee/Delete/@emp.Id" class="btn btn-sm btn-outline-danger" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                            No employees found. <a href="/Employee/Create">Add one?</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-submit on dropdown change
+        document.querySelectorAll('select').forEach(s =>
+            s.addEventListener('change', () => s.closest('form').submit()));
+    </script>
+}

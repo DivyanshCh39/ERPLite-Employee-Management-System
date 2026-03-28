@@ -1,0 +1,43 @@
+@model IEnumerable<Department>
+@{
+    ViewData["Title"] = "Departments";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="text-muted mb-0">@Model.Count() department(s) total</p>
+    <a href="/Department/Create" class="btn btn-success">
+        <i class="bi bi-plus-lg me-1"></i> Add Department
+    </a>
+</div>
+
+<div class="row g-4">
+    @foreach (var dept in Model)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center fw-bold"
+                             style="width:44px;height:44px;font-size:1.1rem;">
+                            @dept.Name[0]
+                        </div>
+                        <span class="badge bg-primary-subtle text-primary">
+                            @dept.Employees.Count emp(s)
+                        </span>
+                    </div>
+                    <h6 class="fw-bold mt-3 mb-1">@dept.Name</h6>
+                    <p class="text-muted small mb-3">@(dept.Description ?? "No description")</p>
+                    <small class="text-muted">Created: @dept.CreatedAt.ToString("dd MMM yyyy")</small>
+                </div>
+                <div class="card-footer bg-white border-0 pt-0 d-flex gap-2">
+                    <a href="/Department/Edit/@dept.Id" class="btn btn-sm btn-outline-warning flex-fill">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a href="/Department/Delete/@dept.Id" class="btn btn-sm btn-outline-danger flex-fill">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
