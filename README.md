@@ -1,84 +1,119 @@
 # ERPLite – Employee Management System
 
-## 📌 Project Description
-**ERPLite** is a lightweight Employee Management System designed to simplify HR and administrative workflows. It provides a structured way to manage employee records, track attendance, monitor performance, and streamline organizational processes. Built with scalability and ease of use in mind, ERPLite is ideal for small to medium-sized enterprises that need an efficient solution without the complexity of full-scale ERP systems.
-
-The system focuses on:
-- Centralized employee data management  
-- Role-based access control for administrators and staff  
-- Attendance and leave tracking  
-- Performance monitoring and reporting  
-- Simple, intuitive user interface  
-
-By combining essential ERP features with a minimalistic design, ERPLite ensures organizations can manage their workforce effectively while reducing overhead costs and technical complexity.
+A lightweight ERP-style **Employee & Department Management System** built with **ASP.NET Core 8 MVC**, **Entity Framework Core**, and **Microsoft SQL Server**.
 
 ---
 
-## 🚀 Features
-- **Employee Records**: Add, update, and manage employee details.  
-- **Attendance Tracking**: Daily check-in/check-out system with reporting.  
-- **Leave Management**: Apply, approve, and track leaves.  
-- **Role-Based Access**: Secure login for admins, HR, and employees.  
-- **Performance Reports**: Generate insights on employee productivity.  
-- **Scalable Design**: Can be extended with payroll, recruitment, or project modules.  
+## Features
+
+- **Authentication** – Cookie-based login with BCrypt password hashing
+- **Employee CRUD** – Add, view, edit, delete employees with validation
+- **Department CRUD** – Manage departments; prevents deletion if employees exist
+- **Search & Filter** – Filter employees by name, email, department, or status
+- **Salary Report** – Department-wise report powered by a SQL Server **stored procedure**
+- **Dashboard** – Live stats: headcount, salary bill, recent joiners
+- **Data Validation** – Server-side validation with duplicate email/name detection
 
 ---
 
-## 🛠️ Tech Stack
-- **Frontend**: HTML, CSS, JavaScript (or React/Angular if applicable)  
-- **Backend**: Python (Flask/Django) / Node.js / Java (Spring Boot)  
-- **Database**: MySQL / PostgreSQL / SQLite  
-- **Version Control**: Git & GitHub  
+## Tech Stack
+
+| Layer       | Technology                        |
+|-------------|-----------------------------------|
+| Backend     | ASP.NET Core 8 MVC (C#)          |
+| ORM         | Entity Framework Core 8           |
+| Database    | Microsoft SQL Server              |
+| Frontend    | Bootstrap 5, Bootstrap Icons      |
+| Auth        | Cookie Authentication + BCrypt    |
+| CI/DevOps   | GitHub / Git                      |
 
 ---
 
-## 📂 Project Structure
-```
-ERPLite/
-│── docs/              # Documentation
-│── src/               # Source code
-│   ├── backend/       # Server-side logic
-│   ├── frontend/      # UI components
-│── tests/             # Unit and integration tests
-│── requirements.txt   # Dependencies
-│── README.md          # Project overview
-```
+## Getting Started
 
----
+### Prerequisites
+- [.NET 8 SDK](https://dotnet.microsoft.com/download)
+- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (Express edition is fine)
+- [SQL Server Management Studio](https://aka.ms/ssmsfullsetup) (optional)
 
-## ⚙️ Installation & Setup
-1. Clone the repository:  
+### Setup
+
+1. **Clone the repository**
    ```bash
    git clone https://github.com/yourusername/ERPLite.git
-   ```
-2. Navigate to the project directory:  
-   ```bash
    cd ERPLite
    ```
-3. Install dependencies:  
+
+2. **Update connection string** in `appsettings.json`:
+   ```json
+   "DefaultConnection": "Server=YOUR_SERVER;Database=ERPLiteDB;Trusted_Connection=True;TrustServerCertificate=True;"
+   ```
+
+3. **Restore packages and run**
    ```bash
-   pip install -r requirements.txt
+   dotnet restore
+   dotnet run
    ```
-4. Run the application:  
-   ```bash
-   python app.py
+   The app will auto-create the database and seed default departments + admin user on first launch.
+
+4. **Create stored procedures** *(for the Salary Report feature)*
+   Open `SQL/StoredProcedures.sql` in SSMS and execute against `ERPLiteDB`.
+
+5. **Login**
    ```
-5. Access the system at:  
-   ```
-   http://localhost:5000
+   Username: admin
+   Password: Admin@123
    ```
 
 ---
 
-## 📈 Future Enhancements
-- Payroll and salary management  
-- Recruitment and onboarding module  
-- Integration with third-party APIs (e.g., email, SMS notifications)  
-- Cloud deployment for enterprise scalability  
+## Project Structure
+
+```
+ERPLite/
+├── Controllers/
+│   ├── AccountController.cs   # Login / Logout
+│   ├── HomeController.cs      # Dashboard
+│   ├── EmployeeController.cs  # Employee CRUD + Report
+│   └── DepartmentController.cs
+├── Models/
+│   ├── Employee.cs
+│   ├── Department.cs
+│   ├── AppUser.cs
+│   └── ApplicationDbContext.cs  # EF Core DbContext + Seeder
+├── Views/
+│   ├── Shared/_Layout.cshtml   # Sidebar layout
+│   ├── Account/Login.cshtml
+│   ├── Home/Index.cshtml       # Dashboard
+│   ├── Employee/               # Index, Create, Edit, Details, Delete, Report
+│   └── Department/             # Index, Create, Edit, Delete
+├── SQL/
+│   └── StoredProcedures.sql    # 4 stored procedures
+├── appsettings.json
+└── Program.cs
+```
 
 ---
 
-## 🤝 Contributing
-Contributions are welcome! Please fork the repository and submit a pull request with detailed explanations of your changes.
+## Stored Procedures
+
+| Procedure | Description |
+|-----------|-------------|
+| `usp_GetDepartmentSalaryReport` | Salary stats per department (used in Report page) |
+| `usp_SearchEmployees` | Parameterised employee search |
+| `usp_DeactivateEmployee` | Soft-delete (sets IsActive = 0) |
+| `usp_GetHeadcount` | Active employee count per department |
 
 ---
+
+## Screenshots
+
+> Add screenshots here after running locally.
+
+---
+
+## Author
+
+**Divyansh Chaurasia**  
+MCA Student – IET Lucknow  
+[GitHub](https://github.com/DivyanshCh39) | [LinkedIn](https://linkedin.com/in/divyanshch)
